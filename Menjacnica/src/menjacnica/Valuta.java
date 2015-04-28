@@ -1,7 +1,13 @@
 package menjacnica;
 
-public class Valuta {
+import java.io.Serializable;
+
+public class Valuta implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int sifra;
 	private String skraceniNaziv;
 	private String naziv;
@@ -55,6 +61,35 @@ public class Valuta {
 		this.prodajni = prodajni;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + sifra;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Valuta other = (Valuta) obj;
+		if (sifra != other.sifra)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "[sifra=" + sifra + ", skraceniNaziv=" + skraceniNaziv
+				+ ", kupovni=" + kupovni + ", srednji=" + srednji
+				+ ", prodajni=" + prodajni + "]";
+	}
+
 	
 
 }
