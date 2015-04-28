@@ -38,6 +38,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JList;
 
 import menjacnica.Menjacnica;
+import menjacnica.Valuta;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -65,6 +66,10 @@ public class MenjacnicaGUI extends JFrame {
 	
 	//klasa na logickom nivou
 	protected Menjacnica sistem;
+	private JPopupMenu popupMenu;
+	private JMenuItem mntmDodajKurs;
+	private JMenuItem mntmObrisiKurs;
+	private JMenuItem mntmIzvrsiZamenu;
 
 	/**
 	 * Launch the application.
@@ -128,6 +133,11 @@ public class MenjacnicaGUI extends JFrame {
 	private JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("Dodaj kurs");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					prikaziDodajKursGUI();
+				}
+			});
 			btnNewButton.setPreferredSize(new Dimension(140, 25));
 		}
 		return btnNewButton;
@@ -135,6 +145,11 @@ public class MenjacnicaGUI extends JFrame {
 	private JButton getBtnObrisiKurs() {
 		if (btnObrisiKurs == null) {
 			btnObrisiKurs = new JButton("Obrisi kurs");
+			btnObrisiKurs.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					prikaziObrisiKursGUI();
+				}
+			});
 			btnObrisiKurs.setPreferredSize(new Dimension(140, 25));
 		}
 		return btnObrisiKurs;
@@ -224,6 +239,7 @@ public class MenjacnicaGUI extends JFrame {
 	private JList getList() {
 		if (list == null) {
 			list = new JList();
+			addPopup(list, getPopupMenu());
 		}
 		return list;
 	}
@@ -280,4 +296,56 @@ public class MenjacnicaGUI extends JFrame {
 
 	}
 	
+	private void prikaziDodajKursGUI() {
+		DodajKursGUI prozor = new DodajKursGUI(this);
+		prozor.setLocationRelativeTo(contentPane);
+		prozor.setVisible(true);
+	}
+
+	private void prikaziObrisiKursGUI() {
+		if (list.getSelectedValue() != null) {
+			ObrisiKursGUI prozor = new ObrisiKursGUI(this,
+					(Valuta) (list.getSelectedValue()));
+			prozor.setLocationRelativeTo(contentPane);
+			prozor.setVisible(true);
+		}
+	}
+	
+	private JPopupMenu getPopupMenu() {
+		if (popupMenu == null) {
+			popupMenu = new JPopupMenu();
+			popupMenu.add(getMntmDodajKurs());
+			popupMenu.add(getMntmObrisiKurs());
+			popupMenu.add(getMntmIzvrsiZamenu());
+		}
+		return popupMenu;
+	}
+	private JMenuItem getMntmDodajKurs() {
+		if (mntmDodajKurs == null) {
+			mntmDodajKurs = new JMenuItem("Dodaj kurs");
+			mntmDodajKurs.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					prikaziDodajKursGUI();
+				}
+			});
+		}
+		return mntmDodajKurs;
+	}
+	private JMenuItem getMntmObrisiKurs() {
+		if (mntmObrisiKurs == null) {
+			mntmObrisiKurs = new JMenuItem("Obrisi kurs");
+			mntmObrisiKurs.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					prikaziObrisiKursGUI();
+				}
+			});
+		}
+		return mntmObrisiKurs;
+	}
+	private JMenuItem getMntmIzvrsiZamenu() {
+		if (mntmIzvrsiZamenu == null) {
+			mntmIzvrsiZamenu = new JMenuItem("Izvrsi zamenu");
+		}
+		return mntmIzvrsiZamenu;
+	}
 }
