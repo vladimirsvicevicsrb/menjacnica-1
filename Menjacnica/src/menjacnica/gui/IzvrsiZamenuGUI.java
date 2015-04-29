@@ -7,7 +7,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+
 import java.awt.Dimension;
+
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -16,9 +19,14 @@ import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.plaf.basic.BasicBorders.RadioButtonBorder;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.ButtonGroup;
+
+import menjacnica.Valuta;
 
 public class IzvrsiZamenuGUI extends JFrame {
 
@@ -41,26 +49,13 @@ public class IzvrsiZamenuGUI extends JFrame {
 	private JLabel lblKonacniIznos;
 	private JTextField textFieldKonacniIznos;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					IzvrsiZamenuGUI frame = new IzvrsiZamenuGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private MenjacnicaGUI glavniProzor;
+	private Valuta valuta;
 
 	/**
 	 * Create the frame.
 	 */
-	public IzvrsiZamenuGUI() {
+	public IzvrsiZamenuGUI(MenjacnicaGUI glavniProzor, Valuta valuta) {
 		setTitle("Izvrsi zamenu");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -84,6 +79,12 @@ public class IzvrsiZamenuGUI extends JFrame {
 		contentPane.add(getTextFieldValuta());
 		contentPane.add(getLblKonacniIznos());
 		contentPane.add(getTextFieldKonacniIznos());
+		
+		//podesavanje
+		this.glavniProzor = glavniProzor;
+		this.valuta = valuta;
+				
+		prikaziValutu();
 	}
 	private JLabel getLblKupovni() {
 		if (lblKupovni == null) {
@@ -159,13 +160,18 @@ public class IzvrsiZamenuGUI extends JFrame {
 	private JButton getBtnIzvrsiZamenu() {
 		if (btnIzvrsiZamenu == null) {
 			btnIzvrsiZamenu = new JButton("Izracunaj iznos");
+			btnIzvrsiZamenu.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					izvrsiZamenu();
+				}
+			});
 			btnIzvrsiZamenu.setBounds(24, 234, 160, 25);
 		}
 		return btnIzvrsiZamenu;
 	}
 	private JButton getBtnOdustani() {
 		if (btnOdustani == null) {
-			btnOdustani = new JButton("Odustani");
+			btnOdustani = new JButton("Zatvori prozor");
 			btnOdustani.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
@@ -223,5 +229,25 @@ public class IzvrsiZamenuGUI extends JFrame {
 			textFieldKonacniIznos.setColumns(10);
 		}
 		return textFieldKonacniIznos;
+	}
+	
+	private void prikaziValutu(){
+		textFieldProdajniKurs.setText(""+valuta.getProdajni());
+		textFieldKupovniKurs.setText(""+valuta.getKupovni());
+		textFieldValuta.setText(valuta.getSkraceniNaziv());
+	}
+	
+	private void izvrsiZamenu(){
+		try{
+			double konacniIznos = 
+					glavniProzor.sistem.izvrsiTransakciju(valuta,
+							rdbtnProdaja.isSelected(), 
+							Double.parseDouble(textFieldIznos.getText()));
+		
+			textFieldKonacniIznos.setText(""+konacniIznos);
+		} catch (Exception e1) {
+		JOptionPane.showMessageDialog(contentPane, e1.getMessage(),
+				"Greska", JOptionPane.ERROR_MESSAGE);
+	}
 	}
 }
